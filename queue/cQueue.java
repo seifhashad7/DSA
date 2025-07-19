@@ -1,10 +1,10 @@
-public class Queue {
+public class cQueue {
     private int front, rear;
     private int[] arr;
     private int size;
     private int maxSize;
 
-    Queue(int maxSize)
+    cQueue(int maxSize)
     {
         this.maxSize = maxSize;
         arr = new int[maxSize];
@@ -20,7 +20,7 @@ public class Queue {
 
     public boolean isFull()
     {
-        return (rear == maxSize - 1); //or size == maxSize
+        return ( ((rear == maxSize - 1) && (front == 0)) || (rear == front -1) ); //or size == maxSize
     }
 
     public void enqueue(int data)
@@ -28,7 +28,9 @@ public class Queue {
         if(isFull())  throw new RuntimeException("Queue is full");
         //Insert first element 
         if(isEmpty()) front = 0;
-        arr[++rear] = data;
+        //instead of only incremeting the rear by 1, mod it by maxSize
+        rear = (rear + 1) % maxSize;
+        arr[rear] = data;
         size++;
     }
 
@@ -36,8 +38,8 @@ public class Queue {
     {
         if(isEmpty()) throw new RuntimeException("Queue is empty, Nothing to dequeue");
         int element = arr[front];
-        if(front >= rear) front = rear = -1;
-        else front++;
+        if(front == rear) front = rear = -1;
+        else front = (front + 1) % maxSize; //instead of only incremeting the front by 1, mod it by maxSize
         size--;
         return element;
     }
@@ -45,9 +47,9 @@ public class Queue {
     @Override
     public String toString()
     {
-        if(isEmpty()) throw new RuntimeException("Queue is empty!!");
+        if(isEmpty()) return "Queue is empty!!";
         StringBuilder sb = new StringBuilder();
-        for(int it = front; it < rear; it++)
+        for(int it = front; it != rear; it = (it+1) % maxSize)
         {
             sb.append(arr[it] + ", ");   
         }
