@@ -1,13 +1,13 @@
 public class DoublyLinkedList<T> {    
     private int size = 0;
-    private Node<T> head = null;
+    public Node<T> head = null;
 
     //Node class
     public static class Node<T>
     {
-        private T data;
-        private Node<T> prev;
-        private Node<T> next;
+        public T data;
+        public Node<T> prev;
+        public Node<T> next;
 
         Node(T data)
         {
@@ -87,6 +87,32 @@ public class DoublyLinkedList<T> {
         }
         head = newNode;
     }
+
+    public void addAfter(Node<T> node, T data)
+    {
+        // check if previous node is null
+        if (node == null) {
+            throw new RuntimeException("The Node you inserted isn't in the list");
+        }
+
+        // allocate memory for newNode and assign data to newNode
+        Node<T> newNode = new Node<T>(data);
+
+        // set next of newNode to next of prev node's next
+        newNode.next = node.next;
+
+        // set next of prev node to newNode
+        node.next = newNode;
+
+        // set prev of newNode to the previous node
+        newNode.prev = node;
+
+        // set prev of newNode's next to newNode
+        if (newNode.next != null)
+        newNode.next.prev = newNode;
+
+        size++;
+    }
     
     //peekFirst
     public T peekFirst()
@@ -104,6 +130,35 @@ public class DoublyLinkedList<T> {
         while(tmp.next != null) tmp = tmp.next;
 
         return tmp.data;
+    }
+
+    public void deleteNode(Node<T> node)
+    {
+        // If the list is empty or the node to delete is null, throw an exception
+        if(isEmpty() || node == null) throw new RuntimeException("Can't delete since the list is empty!!");
+        
+        // If the node to delete is the head, update head to the next node
+        if(head == node)
+        {
+            head = head.next;
+            // If the new head is not null, set its prev to null
+            if(head != null) head.prev = null;
+        }
+
+        // If the node to delete is not the last node, update the next node's prev pointer
+        if(node.next != null)
+        {
+            node.next.prev = node.prev;
+        }
+
+        // If the node to delete is not the first node, update the previous node's next pointer
+        if(node.prev != null)
+        {
+            node.prev.next = node.next;
+        }
+
+        // Decrement the size of the list
+        size--;
     }
 
     public String toString()
